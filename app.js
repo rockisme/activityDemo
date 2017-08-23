@@ -36,4 +36,9 @@ app.use(async (ctx, next) => {
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 
+// response
+app.on('error', function(err, ctx){
+    console.log(err)
+    logger.error('server error', err, ctx);
+});
 module.exports = app
