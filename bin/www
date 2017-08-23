@@ -9,6 +9,15 @@ var http = require('http');
 //引入配置文件
 var config = require('../config');
 
+/*var Redis = require('../model/redis');
+
+var client = new Redis();
+
+(async () => {
+    let bar = await client.get("foo");
+    console.log('=== bar ==='+bar);
+})();*/
+
 /**
  * Get port from environment and store in Express.
  */
