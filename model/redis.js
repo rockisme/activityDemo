@@ -8,7 +8,7 @@
  * })();
  *
  */
-var config = require('../config/index');
+const config = require('../config/index');
 const Redis=require('ioredis');
 
 const redis = new Redis({
@@ -20,7 +20,7 @@ const redis = new Redis({
     db: 0
 });
 
-class RedisStore{
+class RedisClinet{
     constructor() {
         this.redis = redis
     }
@@ -40,4 +40,4 @@ class RedisStore{
     }
 }
 
-module.exports = RedisStore;
+module.exports = RedisClinet;

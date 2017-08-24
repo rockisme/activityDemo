@@ -6,6 +6,10 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 
+//koa-session2 保证session存储在redis里
+const session = require("koa-session2");
+const Store = require("./model/Store");
+
 const index = require('./routes/index')
 const users = require('./routes/users')
 
@@ -19,7 +23,6 @@ app.use(bodyparser({
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
-
 app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
@@ -35,6 +38,19 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+
+//session保存在redis
+app.use(session({
+    key: "SESSIONID",   //default "koa:sess"
+    store: new Store()
+}));
+
+/*
+session用法
+app.use(ctx => {
+    let user = ctx.session.user;
+    ctx.session.view = "index";
+});*/
 
 // response
 app.on('error', function(err, ctx){
