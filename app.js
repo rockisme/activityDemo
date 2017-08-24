@@ -1,5 +1,6 @@
 const Koa = require('koa')
 const app = new Koa()
+const router = require('koa-router')();
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
@@ -12,6 +13,13 @@ const Store = require("./model/Store");
 
 const index = require('./routes/index')
 const users = require('./routes/users')
+const activity = require('./routes/api')
+
+//api 返回json
+const response_formatter = require('./middlewares/response_formatter');
+
+//api
+const api = require('./routes/api');
 
 // error handler
 onerror(app)
@@ -38,9 +46,18 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
+//添加格式化处理响应结果的中间件，在添加路由之前调用
+//仅对/api开头的url进行格式化处理
+app.use(response_formatter('^/api'));
+
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+app.use(activity.routes(), activity.allowedMethods())
+
+//apis
+router.use("/api",api.routes(), api.allowedMethods())
+app.use(router.routes(), router.allowedMethods())
 
 //session保存在redis
 app.use(session({
